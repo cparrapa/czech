@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Czech It Up - A1 Neobrutalism 6</title>
+    <title>Czech It App v7</title>
     <!-- Using a bold, quirky font for that neobrutalist feel -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -321,8 +321,26 @@
 
         .action-buttons button { flex: 1; font-size: 0.9rem; padding: 12px 10px; }
         .btn-correct { background-color: var(--accent-green); }
+        .btn-ok { background-color: var(--accent-yellow); }
         .btn-train { background-color: var(--accent-pink); }
         .btn-flip { background-color: var(--text-main); color: white; width: 100%; margin-top: auto; }
+
+        .audio-btn-small {
+            background: rgba(255,255,255,0.4);
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 4px 10px;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: all 0.1s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #000;
+        }
+        .audio-btn-small:active { transform: scale(0.95); }
 
         .dictionary-controls {
             display: flex;
@@ -474,7 +492,7 @@
     <div class="app-container">
         <!-- Header -->
         <header class="brutal">
-            <div>🇨🇿 Czech It Up A1</div>
+            <div>🇨🇿 Czech It App</div>
             <div style="font-size: 1rem;">
                 Lvl <span id="top-level" style="background:var(--accent-yellow); padding: 2px 8px; border:2px solid #000; border-radius:4px;">1</span>
             </div>
@@ -716,7 +734,33 @@
             { word: "Červený", emoji: "🔴", hint: "Koupil ___ auto.", example: "Koupil <b>červené</b> auto.", grammar: "Adjective", topic: "Colors", en: "Red", es: "Rojo" },
             { word: "Modrý", emoji: "🔵", hint: "Nebe je ___.", example: "Nebe je <b>modré</b>.", grammar: "Adjective", topic: "Colors", en: "Blue", es: "Azul" },
             { word: "Zelený", emoji: "🟢", hint: "Tráva je ___.", example: "Tráva je <b>zelená</b>.", grammar: "Adjective", topic: "Colors", en: "Green", es: "Verde" },
-            { word: "Žlutý", emoji: "🟡", hint: "Slunce je ___.", example: "Slunce je <b>žluté</b>.", grammar: "Adjective", topic: "Colors", en: "Yellow", es: "Amarillo" }
+            { word: "Žlutý", emoji: "🟡", hint: "Slunce je ___.", example: "Slunce je <b>žluté</b>.", grammar: "Adjective", topic: "Colors", en: "Yellow", es: "Amarillo" },
+
+            // --- SRS ADDED WORDS ---
+            { word: "Cestovat", emoji: "✈️", hint: "Rád ___ po Evropě.", example: "Rád <b>cestuju</b> po Evropě.", grammar: "Verb", topic: "Travel", en: "To travel", es: "Viajar", conjugations: { ja: "cestuju", ty: "cestuješ", on: "cestuje", my: "cestujeme", vy: "cestujete", oni: "cestujou" }, note: "Czechs love to travel to Croatia (Chorvatsko) for summer holidays!" },
+            { word: "Často", emoji: "🔄", hint: "Chodím tam ___.", example: "Chodím tam <b>často</b>.", grammar: "Adverb", topic: "Time", en: "Often", es: "A menudo", note: "Opposite of 'často' is 'málokdy' (rarely) or 'nikdy' (never)." },
+            { word: "Děkovat", emoji: "🙏", hint: "Musím ti ___.", example: "Musím ti <b>děkovat</b>.", grammar: "Verb", topic: "Communication", en: "To thank", es: "Agradecer", conjugations: { ja: "děkuju", ty: "děkuješ", on: "děkuje", my: "děkujeme", vy: "děkujete", oni: "děkujou" }, note: "Usually used with the dative case (děkovat komu)." },
+            { word: "Hodina", emoji: "⏱️", hint: "Trvá to jednu ___.", example: "Trvá to jednu <b>hodinu</b>.", grammar: "Noun", gender: "Feminine", plural: "hodiny", topic: "Time", en: "Hour / Lesson", es: "Hora", note: "'Hodiny' can mean hours, a clock, or a watch." },
+            { word: "Jak", emoji: "🤷", hint: "___ se máš?", example: "<b>Jak</b> se máš?", grammar: "Adverb", topic: "Questions", en: "How", es: "Cómo", note: "'Jak se máš?' is informal. Formal is 'Jak se máte?'" },
+            { word: "Jako", emoji: "🪞", hint: "Je vysoký ___ strom.", example: "Je vysoký <b>jako</b> strom.", grammar: "Conjunction", topic: "Basics", en: "As / Like", es: "Como", note: "Used frequently for comparisons." },
+            { word: "Prominout", emoji: "🥺", hint: "Musíš mi ___.", example: "Musíš mi <b>prominout</b>.", grammar: "Verb", topic: "Communication", en: "To forgive / excuse", es: "Perdonar", conjugations: { ja: "prominu", ty: "promineš", on: "promine", my: "promineme", vy: "prominete", oni: "prominou" }, note: "The phrase 'Promiňte!' means 'Excuse me!' or 'I'm sorry!'" },
+            { word: "Rád / Ráda", emoji: "❤️", hint: "Mám ___ kávu.", example: "Mám <b>rád</b> kávu.", grammar: "Adjective", topic: "Preferences", en: "Glad / Like (doing something)", es: "Gustar", note: "'Rád' is for males, 'Ráda' for females. Use it with verbs: 'Rád čtu' (I like reading)." },
+            { word: "Sedm", emoji: "7️⃣", hint: "Týden má ___ dní.", example: "Týden má <b>sedm</b> dní.", grammar: "Number", topic: "Numbers", en: "Seven", es: "Siete", note: "Considered a lucky number in many cultures, including Czech." },
+            { word: "Snídat", emoji: "🥐", hint: "Ráno rád ___.", example: "Ráno rád <b>snídám</b>.", grammar: "Verb", topic: "Food", en: "To have breakfast", es: "Desayunar", conjugations: { ja: "snídám", ty: "snídáš", on: "snídá", my: "snídáme", vy: "snídáte", oni: "snídají" }, note: "A typical Czech breakfast includes bread, butter, ham, and cheese." },
+            { word: "Studovat", emoji: "🎓", hint: "Chci ___ medicínu.", example: "Chci <b>studovat</b> medicínu.", grammar: "Verb", topic: "School", en: "To study", es: "Estudiar", conjugations: { ja: "studuju", ty: "studuješ", on: "studuje", my: "studujeme", vy: "studujete", oni: "studujou" }, note: "Used specifically for studying at an institution, unlike 'učit se' (to learn/study generally)." },
+            { word: "Sportovat", emoji: "🏃", hint: "Musíme více ___.", example: "Musíme více <b>sportovat</b>.", grammar: "Verb", topic: "Hobbies", en: "To do sports", es: "Hacer deporte", conjugations: { ja: "sportuju", ty: "sportuješ", on: "sportuje", my: "sportujeme", vy: "sportujete", oni: "sportujou" }, note: "Czechs are very active; hiking, cycling, and ice hockey are huge here." },
+            { word: "Aha", emoji: "💡", hint: "___, už rozumím.", example: "<b>Aha</b>, už rozumím.", grammar: "Phrase", topic: "Communication", en: "Oh, I see", es: "Ah, ya veo", note: "A very common filler word to show you are following the conversation." },
+            { word: "Asi", emoji: "🤔", hint: "To bude ___ drahé.", example: "To bude <b>asi</b> drahé.", grammar: "Adverb", topic: "Abstract", en: "Probably / About", es: "Probablemente / Más o menos", note: "Can mean 'probably' or 'approximately' (e.g., 'Asi 5 minut' = About 5 minutes)." },
+            { word: "Brzy", emoji: "⏰", hint: "Musím vstávat ___.", example: "Musím vstávat <b>brzy</b>.", grammar: "Adverb", topic: "Time", en: "Early / Soon", es: "Pronto / Temprano", note: "The opposite is 'pozdě' (late)." },
+            { word: "Deset", emoji: "🔟", hint: "Mám ___ korun.", example: "Mám <b>deset</b> korun.", grammar: "Number", topic: "Numbers", en: "Ten", es: "Diez", note: "Nouns following 10 are in the genitive plural." },
+            { word: "Do", emoji: "🚶", hint: "Jdu ___ práce.", example: "Jdu <b>do</b> práce.", grammar: "Preposition", topic: "Directions", en: "To / Into", es: "A / Hacia", note: "Always takes the Genitive case (e.g., do + školy)." },
+            { word: "Domů", emoji: "🏠", hint: "Jdu ___.", example: "Jdu <b>domů</b>.", grammar: "Adverb", topic: "Locations", en: "To home (direction)", es: "A casa", note: "'Doma' means you are AT home. 'Domů' means you are GOING home." },
+            { word: "Drink", emoji: "🍹", hint: "Dáme si ___?", example: "Dáme si <b>drink</b>?", grammar: "Noun", gender: "Masculine Inanimate", topic: "Food", en: "Drink (Alcoholic usually)", es: "Bebida / Copa", note: "Borrowed directly from English, usually refers to a mixed drink or cocktail." },
+            { word: "Dvacet", emoji: "2️⃣0️⃣", hint: "Je mi ___ let.", example: "Je mi <b>dvacet</b> let.", grammar: "Number", topic: "Numbers", en: "Twenty", es: "Veinte", note: "'Let' is the irregular genitive plural of 'rok' (year)." },
+            { word: "Hned", emoji: "⚡", hint: "Přijdu ___.", example: "Přijdu <b>hned</b>.", grammar: "Adverb", topic: "Time", en: "Immediately / Right away", es: "Inmediatamente", note: "Often heard in restaurants: 'Hned to bude!' (It will be right out!)." },
+            { word: "Hodně", emoji: "📈", hint: "Mám ___ práce.", example: "Mám <b>hodně</b> práce.", grammar: "Adverb", topic: "Quantity", en: "A lot / Much", es: "Mucho", note: "Requires the noun to be in the genitive case." },
+            { word: "Kdy", emoji: "🕒", hint: "___ tam budeš?", example: "<b>Kdy</b> tam budeš?", grammar: "Adverb", topic: "Questions", en: "When", es: "Cuándo", note: "Used in questions. Do not confuse with 'když' (when/if in statements)." },
+            { word: "Zítra", emoji: "🌅", hint: "___ je sobota.", example: "<b>Zítra</b> je sobota.", grammar: "Adverb", topic: "Time", en: "Tomorrow", es: "Mañana", note: "'Pozítří' means the day after tomorrow." }
         ];
 
         const STORAGE_KEY = 'czechA1AppProgressV3';
@@ -739,13 +783,16 @@
             // Ensure all words exist in wordStats
             vocabData.forEach(item => {
                 if (!appState.wordStats[item.word]) {
-                    appState.wordStats[item.word] = { seen: 0, correct: 0 };
+                    appState.wordStats[item.word] = { seen: 0, correct: 0, interval: 0, ease: 2.5, nextReview: null };
+                } else if (appState.wordStats[item.word].interval === undefined) {
+                    // Migrate older save files to SRS
+                    appState.wordStats[item.word].interval = 0;
+                    appState.wordStats[item.word].ease = 2.5;
+                    appState.wordStats[item.word].nextReview = null;
                 }
             });
 
-            if (appState.queue.length === 0 || appState.currentQueuePos >= appState.queue.length) {
-                generateQueue();
-            }
+            generateQueue();
             
             updateStatsUI();
             loadCardToDOM(appState.queue[appState.currentQueuePos]);
@@ -773,15 +820,33 @@
         }
 
         function generateQueue() {
-            // Focus queue slightly on words with lower mastery in the future, 
-            // for now purely random shuffle of the entire deck.
-            let indices = Array.from({length: vocabData.length}, (_, i) => i);
-            // Fisher-Yates Shuffle for anti-repetition
-            for (let i = indices.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [indices[i], indices[j]] = [indices[j], indices[i]];
+            const now = Date.now();
+            let dueIndices = [];
+            let newIndices = [];
+            
+            vocabData.forEach((item, index) => {
+                const stats = appState.wordStats[item.word];
+                if (!stats.nextReview) {
+                    newIndices.push(index);
+                } else if (stats.nextReview <= now) {
+                    dueIndices.push(index);
+                }
+            });
+
+            // Shuffle arrays to mix it up
+            dueIndices.sort(() => Math.random() - 0.5);
+            newIndices.sort(() => Math.random() - 0.5);
+
+            // Prioritize due cards, add a few new ones
+            appState.queue = [...dueIndices, ...newIndices.slice(0, 10)];
+            
+            // If everything is completely caught up, give them some random practice cards
+            if (appState.queue.length === 0) {
+                let randomIndices = Array.from({length: vocabData.length}, (_, i) => i);
+                randomIndices.sort(() => Math.random() - 0.5);
+                appState.queue = randomIndices.slice(0, 15);
             }
-            appState.queue = indices;
+
             appState.currentQueuePos = 0;
             saveState();
         }
@@ -799,13 +864,21 @@
                 </div>`;
 
             if (data.example) {
-                html += `<div class="hint brutal example-back" id="b-example">${data.example}</div>`;
+                // Strip HTML tags for clean audio reading
+                const cleanExample = data.example.replace(/<[^>]*>?/gm, '');
+                html += `<div class="hint brutal example-back" id="b-example">
+                            ${data.example}
+                            <br>
+                            <button class="audio-btn-small" onclick="playAudio(event, null, '${cleanExample}')">
+                                🔊 Poslechnout
+                            </button>
+                         </div>`;
             }
 
             html += `
                 <div class="translations">
-                    <p>🇬🇧 <strong>EN:</strong> <span id="b-en">${data.en || 'N/A'}</span></p>
-                    <p>🇪🇸 <strong>ES:</strong> <span id="b-es">${data.es || 'N/A'}</span></p>
+                    <p>🇬🇧:</strong> <span id="b-en">${data.en || 'N/A'}</span></p>
+                    <p>🇪🇸:</strong> <span id="b-es">${data.es || 'N/A'}</span></p>
                 </div>`;
 
             if (data.grammar === 'Verb' && data.conjugations) {
@@ -832,8 +905,9 @@
             } else {
                 html += `
                 <div class="action-buttons">
-                    <button class="brutal-btn btn-train" onclick="handleAnswer(false)">Znovu 🧠</button>
-                    <button class="brutal-btn btn-correct" onclick="handleAnswer(true)">Umím! ✅</button>
+                    <button class="brutal-btn btn-train" onclick="handleSRS('again')">Znovu 🧠</button>
+                    <button class="brutal-btn btn-ok" onclick="handleSRS('good')">Dobrý 👍</button>
+                    <button class="brutal-btn btn-correct" onclick="handleSRS('easy')">Snadný ⚡</button>
                 </div>`;
             }
 
@@ -896,27 +970,44 @@
         }
 
         // Handle the user's answer
-        function handleAnswer(wasCorrect) {
-            const currentWord = vocabData[appState.queue[appState.currentQueuePos]].word;
+        function handleSRS(rating) {
+            const currentWordIndex = appState.queue[appState.currentQueuePos];
+            const currentWord = vocabData[currentWordIndex].word;
+            let stats = appState.wordStats[currentWord];
             
-            // Update word mastery stats
-            if (!appState.wordStats[currentWord]) {
-                appState.wordStats[currentWord] = { seen: 0, correct: 0 };
-            }
-            appState.wordStats[currentWord].seen++;
-            if (wasCorrect) {
-                appState.wordStats[currentWord].correct++;
+            stats.seen++;
+            const now = Date.now();
+            
+            if (rating === 'again') {
+                stats.interval = 0;
+                stats.ease = Math.max(1.3, stats.ease - 0.2);
+                // Review again in 1 minute
+                stats.nextReview = now + 60 * 1000; 
+                // Push to end of current queue so we see it again this session
+                appState.queue.push(currentWordIndex);
+            } else {
+                stats.correct++;
                 appState.correctAnswers++;
-                appState.xp += 10;
+                appState.xp += (rating === 'easy' ? 15 : 10);
                 
                 // Level Up Check
                 const newLevel = Math.floor(appState.xp / xpPerLevel) + 1;
                 if (newLevel > appState.level) {
                     appState.level = newLevel;
-                    // Removed alert for uninterrupted flow!
                 }
+
+                // SuperMemo-2 style pacing
+                if (rating === 'good') {
+                    stats.interval = stats.interval === 0 ? 1 : Math.round(stats.interval * stats.ease);
+                } else if (rating === 'easy') {
+                    stats.interval = stats.interval === 0 ? 3 : Math.round(stats.interval * stats.ease * 1.3);
+                    stats.ease += 0.15;
+                }
+                
+                // Set next review date based on interval (in days)
+                stats.nextReview = now + (stats.interval * 24 * 60 * 60 * 1000);
             }
-            // Move queue forward
+
             appState.cardsReviewed++;
             appState.currentQueuePos++;
             
