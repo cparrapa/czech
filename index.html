@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Czech It Up - A1 Neobrutalism 6</title>
+    <!-- Using a bold, quirky font for that neobrutalist feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4db5e;
+            --card-bg: #ffffff;
+            --text-main: #111111;
+            --border-color: #000000;
+            --accent-blue: #70d6ff;
+            --accent-pink: #ff70a6;
+            --accent-green: #52b788;
+            --accent-red: #ff9770;
+            --accent-purple: #9d4edd;
+            --accent-yellow: #ffd166;
+            --accent-orange: #fca311;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Neobrutalism Base Class */
+        .brutal {
+            border: 4px solid var(--border-color);
+            box-shadow: 6px 6px 0px var(--border-color);
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .brutal-btn {
+            cursor: pointer;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 12px 24px;
+            background: var(--card-bg);
+            border: 4px solid var(--border-color);
+            box-shadow: 4px 4px 0px var(--border-color);
+            border-radius: 8px;
+            transition: all 0.1s ease;
+            font-family: inherit;
+        }
+
+        .brutal-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px var(--border-color);
+        }
+
+        .brutal-input {
+            padding: 12px;
+            border: 3px solid var(--border-color);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 1rem;
+            box-shadow: 3px 3px 0px var(--border-color);
+            outline: none;
+            width: 100%;
+            background: #fff;
+            transition: all 0.1s ease;
+        }
+        
+        .brutal-input:focus {
+            box-shadow: 0px 0px 0px var(--border-color);
+            transform: translate(3px, 3px);
+            background: #fdfdfd;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+        }
+        /* Top Bar: Stats & Gamification */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 5px;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background: var(--card-bg);
+            border: 3px solid var(--border-color);
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px var(--border-color);
+            opacity: 0.7;
+            min-width: 100px;
+            font-size: 0.9rem;
+        }
+
+        .nav-tab.active {
+            opacity: 1;
+            background: var(--accent-yellow);
+            box-shadow: 5px 5px 0px var(--border-color);
+            transform: translate(-2px, -2px);
+        }
+
+        /* Tabs content visibility */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        /* Card Container & Flip Logic */
+        .card-container {
+            width: 100%;
+            height: 640px; /* Increased slightly to fit example sentences */
+            perspective: 1000px;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .flashcard.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            background-color: var(--card-bg);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Allows scrolling if content is too long */
+            overflow-x: hidden;
+        }
+
+        /* Hide scrollbar for a cleaner look */
+        .card-face::-webkit-scrollbar { width: 0px; }
+
+        .card-front {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #fdfdfd;
+        }
+
+        /* Card Content Styles */
+        .word-header {
+            text-align: center;
+            font-size: 3.2rem;
+            font-weight: 700;
+            margin: 20px 0;
+            word-wrap: break-word;
+        }
+
+        .b-word-header {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .emoji-back {
+            font-size: 3.5rem;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .hint {
+            background: var(--accent-blue);
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .example-back {
+            background: var(--accent-green);
+            color: #fff;
+            text-shadow: 1px 1px 0 #000;
+        }
+
+        .audio-btn {
+            background: var(--accent-red);
+            font-size: 1.1rem;
+            padding: 15px 30px;
+            width: 80%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: auto;
+        }
+
+        /* Tags for Back of Card */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+            justify-content: center;
+        }
+
+        .tag {
+            padding: 4px 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .t-gender { background: var(--accent-pink); }
+        .t-grammar { background: var(--accent-blue); }
+        .t-topic { background: var(--accent-yellow); }
+        .t-plural { background: #eee; }
+
+        .translations {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-align: center;
+            background: #fff;
+            border: 2px solid var(--border-color);
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 2px 2px 0px var(--border-color);
+        }
+        
+        .translations p { margin: 5px 0; }
+
+        .conjugation-box {
+            background: var(--accent-purple);
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .conjugation-box h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .conjugation-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+
+        .conj-item {
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
+            border: 2px solid var(--border-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        .conj-pronoun { font-weight: normal; font-size: 0.8rem; color: #444; }
+        
+        .fun-fact {
+            background: var(--bg-color);
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .action-buttons button { flex: 1; font-size: 0.9rem; padding: 12px 10px; }
+        .btn-correct { background-color: var(--accent-green); }
+        .btn-train { background-color: var(--accent-pink); }
+        .btn-flip { background-color: var(--text-main); color: white; width: 100%; margin-top: auto; }
+
+        .dictionary-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+            background: var(--card-bg);
+            padding: 15px;
+            border: 4px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 4px 4px 0px var(--border-color);
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dict-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding-right: 5px;
+            padding-bottom: 20px;
+        }
+        
+        .dict-list::-webkit-scrollbar { width: 8px; }
+        .dict-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
+        .dict-item {
+            background: var(--card-bg);
+            border: 3px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 3px 3px 0px var(--border-color);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .dict-item:hover {
+            background: #fdfdfd;
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px var(--border-color);
+        }
+
+        .dict-word-title { font-size: 1.4rem; font-weight: bold; }
+        .dict-translations { color: #555; font-size: 0.95rem; margin-top: 5px; }
+
+        .mastery-badge {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .mastery-good { background: var(--accent-green); }
+        .mastery-ok { background: var(--accent-yellow); }
+        .mastery-bad { background: var(--accent-pink); }
+        .mastery-none { background: #eee; }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 500px;
+            height: 640px;
+            position: relative;
+            transform: none; /* Overriding card-back transform */
+            border-radius: 8px;
+        }
+
+        .close-modal-btn {
+            background: var(--text-main);
+            color: white;
+            width: 100%;
+            margin-top: auto;
+            margin-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .stat-card h3 { font-size: 1rem; text-transform: uppercase; color: #555; }
+        .stat-card .value { font-size: 2.5rem; font-weight: bold; }
+        
+        .c-blue { background: var(--accent-blue); }
+        .c-green { background: var(--accent-green); }
+        .c-pink { background: var(--accent-pink); }
+        .c-red { background: var(--accent-red); }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #eee;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--text-main);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .backup-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .backup-controls button { flex: 1; }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="brutal">
+            <div>🇨🇿 Czech It Up A1</div>
+            <div style="font-size: 1rem;">
+                Lvl <span id="top-level" style="background:var(--accent-yellow); padding: 2px 8px; border:2px solid #000; border-radius:4px;">1</span>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <div class="nav-menu">
+            <div class="nav-tab active" onclick="switchTab('practice')" id="tab-btn-practice">Cards 📇</div>
+            <div class="nav-tab" onclick="switchTab('dictionary')" id="tab-btn-dictionary">Browse 📖</div>
+            <div class="nav-tab" onclick="switchTab('stats')" id="tab-btn-stats">Stats 📊</div>
+        </div>
+
+        <!-- Practice Tab -->
+        <div id="view-practice" class="tab-content active">
+            <div class="card-container">
+                <div class="flashcard brutal" id="flashcard">
+                    <!-- FRONT OF CARD -->
+                    <div class="card-face card-front">
+                        <button class="brutal-btn audio-btn" onclick="playAudio(event, 'f-word')" title="Play pronunciation">
+                            <span>🔊</span> Poslechnout
+                        </button>
+                        
+                        <h1 class="word-header" id="f-word">Word</h1>
+                        <div class="hint brutal" id="f-hint" style="display: none;">Hint here</div>
+                        <button class="brutal-btn btn-flip" onclick="flipCard()">Zobrazit odpověď 👁️</button>
+                    </div>
+
+                    <!-- BACK OF CARD -->
+                    <div class="card-face card-back" id="card-back-content">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-dictionary" class="tab-content">
+            <div class="dictionary-controls">
+                <input type="text" id="dict-search" class="brutal-input" placeholder="Search for a word (Czech or English)..." oninput="renderDictionary()">
+                <div class="filter-group">
+                    <select id="dict-grammar" class="brutal-input" onchange="renderDictionary()">
+                        <option value="All">All Grammar</option>
+                        <option value="Noun">Nouns</option>
+                        <option value="Verb">Verbs</option>
+                        <option value="Adjective">Adjectives</option>
+                        <option value="Adverb">Adverbs</option>
+                        <option value="Pronoun">Pronouns</option>
+                        <option value="Conjunction">Conjunctions</option>
+                        <option value="Phrase">Phrases</option>
+                        <option value="Number">Numbers</option>
+                    </select>
+                    <select id="dict-sort" class="brutal-input" onchange="renderDictionary()">
+                        <option value="alpha">A-Z (Alphabetical)</option>
+                        <option value="weakest">Needs Practice (Low Mastery)</option>
+                        <option value="strongest">Mastered (High Mastery)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="dict-list" id="dict-list-container">
+                <!-- Dictionary items rendered via JS -->
+            </div>
+        </div>
+
+        <!-- Stats Tab -->
+        <div id="view-stats" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card brutal c-blue">
+                    <h3>Total XP</h3>
+                    <div class="value" id="stat-xp">0</div>
+                </div>
+                <div class="stat-card brutal c-green">
+                    <h3>Current Level</h3>
+                    <div class="value" id="stat-level">1</div>
+                    <div class="progress-bar"><div class="progress-fill" id="stat-progress"></div></div>
+                </div>
+                <div class="stat-card brutal c-pink">
+                    <h3>Cards Reviewed</h3>
+                    <div class="value" id="stat-reviewed">0</div>
+                </div>
+                <div class="stat-card brutal c-red">
+                    <h3>Accuracy</h3>
+                    <div class="value" id="stat-accuracy">0%</div>
+                </div>
+            </div>
+            
+            <div class="backup-controls">
+                <button class="brutal-btn" style="background: var(--accent-blue);" onclick="exportProgress()">Export Data 💾</button>
+                <button class="brutal-btn" style="background: var(--accent-yellow);" onclick="document.getElementById('import-file').click()">Import Data 📂</button>
+                <input type="file" id="import-file" style="display:none;" accept=".json" onchange="importProgress(event)">
+            </div>
+
+            <button class="brutal-btn" style="width: 100%; margin-top: 15px; background: white;" onclick="resetProgress()">
+                Reset Progress ⚠️
+            </button>
+        </div>
+    </div>
+
+    <div id="word-modal" class="modal-overlay" style="display:none;" onclick="closeModal(event)">
+        <div class="modal-content brutal card-face card-back" id="modal-content-area" onclick="event.stopPropagation()">
+            <!-- Populated by JS to look exactly like the back of the card -->
+        </div>
+    </div>
+
+    <script>
+        // Extensively expanded list based on the A1 curriculum provided, with sentences and notes!
+        const vocabData = [
+            // VERBS (With Conjugations & Sentences)
+            { word: "Být", emoji: "🧍", hint: "Já ___ student.", example: "Já <b>jsem</b> student.", grammar: "Verb", topic: "Basic Verbs", en: "To be", es: "Ser/Estar", conjugations: { ja: "jsem", ty: "jsi", on: "je", my: "jsme", vy: "jste", oni: "jsou" }, note: "The most common verb in Czech. Often omitted in third person present in informal speech." },
+            { word: "Mít", emoji: "🤲", hint: "Já ___ problém.", example: "Já <b>mám</b> problém.", grammar: "Verb", topic: "Basic Verbs", en: "To have", es: "Tener", conjugations: { ja: "mám", ty: "máš", on: "má", my: "máme", vy: "máte", oni: "mají" }, note: "'Mít rád' means to like something." },
+            { word: "Dělat", emoji: "🛠️", hint: "Co rád ___?", example: "Co rád <b>děláš</b>?", grammar: "Verb", topic: "Actions", en: "To do / make", es: "Hacer", conjugations: { ja: "dělám", ty: "děláš", on: "dělá", my: "děláme", vy: "děláte", oni: "dělají" } },
+            { word: "Jít", emoji: "🚶", hint: "My ___ do kina.", example: "My <b>jdeme</b> do kina.", grammar: "Verb", topic: "Movement", en: "To go (walk)", es: "Ir (caminando)", conjugations: { ja: "jdu", ty: "jdeš", on: "jde", my: "jdeme", vy: "jdete", oni: "jdou" }, note: "Used specifically for traveling on foot." },
+            { word: "Jet", emoji: "🚗", hint: "Ona ___ vlakem.", example: "Ona <b>jede</b> vlakem.", grammar: "Verb", topic: "Movement", en: "To go (vehicle)", es: "Ir (vehículo)", conjugations: { ja: "jedu", ty: "jedeš", on: "jede", my: "jedeme", vy: "jedete", oni: "jedou" }, note: "Used specifically for traveling by a vehicle." },
+            { word: "Jíst", emoji: "🍽️", hint: "Rád ___ pizzu.", example: "Rád <b>jím</b> pizzu.", grammar: "Verb", topic: "Food", en: "To eat", es: "Comer", conjugations: { ja: "jím", ty: "jíš", on: "jí", my: "jíme", vy: "jíte", oni: "jedí" } },
+            { word: "Pít", emoji: "🥤", hint: "Ráno ___ kávu.", example: "Ráno <b>piju</b> kávu.", grammar: "Verb", topic: "Food", en: "To drink", es: "Beber", conjugations: { ja: "piju", ty: "piješ", on: "pije", my: "pijeme", vy: "pijete", oni: "pijou" } },
+            { word: "Mluvit", emoji: "🗣️", hint: "On ___ česky.", example: "On <b>mluví</b> česky.", grammar: "Verb", topic: "Communication", en: "To speak", es: "Hablar", conjugations: { ja: "mluvím", ty: "mluvíš", on: "mluví", my: "mluvíme", vy: "mluvíte", oni: "mluví" } },
+            { word: "Učit se", emoji: "📚", hint: "My ___ se gramatiku.", example: "My <b>učíme</b> se gramatiku.", grammar: "Verb", topic: "School", en: "To learn", es: "Aprender", conjugations: { ja: "učím se", ty: "učíš se", on: "učí se", my: "učíme se", vy: "učíte se", oni: "učí se" }, note: "Always requires the reflexive pronoun 'se'." },
+            { word: "Rozumět", emoji: "🧠", hint: "Já ti ___.", example: "Já ti <b>nerozumím</b>.", grammar: "Verb", topic: "Communication", en: "To understand", es: "Entender", conjugations: { ja: "rozumím", ty: "rozumíš", on: "rozumí", my: "rozumíme", vy: "rozumíte", oni: "rozumějí" } },
+            { word: "Vařit", emoji: "👨‍🍳", hint: "Dnes ___ večeři ty.", example: "Dnes <b>vaříš</b> večeři ty.", grammar: "Verb", topic: "Food", en: "To cook", es: "Cocinar", conjugations: { ja: "vařím", ty: "vaříš", on: "vaří", my: "vaříme", vy: "vaříte", oni: "vaří" } },
+            { word: "Číst", emoji: "📖", hint: "Ona ___ noviny.", example: "Ona <b>čte</b> noviny.", grammar: "Verb", topic: "Hobbies", en: "To read", es: "Leer", conjugations: { ja: "čtu", ty: "čteš", on: "čte", my: "čteme", vy: "čtete", oni: "čtou" } },
+            { word: "Psát", emoji: "✍️", hint: "Já ___ e-mail.", example: "Já <b>píšu</b> e-mail.", grammar: "Verb", topic: "School", en: "To write", es: "Escribir", conjugations: { ja: "píšu", ty: "píšeš", on: "píše", my: "píšeme", vy: "píšete", oni: "píšou" } },
+            { word: "Spát", emoji: "😴", hint: "Děti už ___.", example: "Děti už <b>spí</b>.", grammar: "Verb", topic: "Routine", en: "To sleep", es: "Dormir", conjugations: { ja: "spím", ty: "spíš", on: "spí", my: "spíme", vy: "spíte", oni: "spí" } },
+            { word: "Pracovat", emoji: "💼", hint: "Kde ___?", example: "Kde <b>pracuješ</b>?", grammar: "Verb", topic: "Work", en: "To work", es: "Trabajar", conjugations: { ja: "pracuju", ty: "pracuješ", on: "pracuje", my: "pracujeme", vy: "pracujete", oni: "pracujou" } },
+            { word: "Vidět", emoji: "👁️", hint: "Já tě ___.", example: "Já tě <b>vidím</b>.", grammar: "Verb", topic: "Senses", en: "To see", es: "Ver", conjugations: { ja: "vidím", ty: "vidíš", on: "vidí", my: "vidíme", vy: "vidíte", oni: "vidí" } },
+            { word: "Slyšet", emoji: "👂", hint: "Nic ___.", example: "Nic <b>neslyším</b>.", grammar: "Verb", topic: "Senses", en: "To hear", es: "Escuchar/Oír", conjugations: { ja: "slyším", ty: "slyšíš", on: "slyší", my: "slyšíme", vy: "slyšíte", oni: "slyší" } },
+            { word: "Znát", emoji: "🤝", hint: "Já ho ___.", example: "Já ho <b>znám</b>.", grammar: "Verb", topic: "People", en: "To know (a person/place)", es: "Conocer", conjugations: { ja: "znám", ty: "znáš", on: "zná", my: "známe", vy: "znáte", oni: "znají" } },
+            { word: "Vědět", emoji: "💡", hint: "Já ___ kde to je.", example: "Já <b>vím</b> kde to je.", grammar: "Verb", topic: "Knowledge", en: "To know (a fact)", es: "Saber", conjugations: { ja: "vím", ty: "víš", on: "ví", my: "víme", vy: "víte", oni: "vědí" }, note: "Irregular verb. Used for facts, unlike 'Znát' which is for acquaintances." },
+            { word: "Ptát se", emoji: "❓", hint: "Musím se ___ učitele.", example: "Musím se <b>ptát</b> učitele.", grammar: "Verb", topic: "Communication", en: "To ask", es: "Preguntar", conjugations: { ja: "ptám se", ty: "ptáš se", on: "ptá se", my: "ptáme se", vy: "ptáte se", oni: "ptají se" } },
+            { word: "Znamenat", emoji: "🔤", hint: "Co to ___?", example: "Co to <b>znamená</b>?", grammar: "Verb", topic: "Learning", en: "To mean", es: "Significar", conjugations: { ja: "znamenám", ty: "znamenáš", on: "znamená", my: "znamenáme", vy: "znamenáte", oni: "znamenají" } },
+
+            // NOUNS
+            { word: "Cizinec / Cizinka", emoji: "🌍", hint: "On není Čech, je ___.", example: "On není Čech, je <b>cizinec</b>.", grammar: "Noun", gender: "Masculine / Feminine", topic: "People", en: "Foreigner", es: "Extranjero/a" },
+            { word: "Čech / Češka", emoji: "🇨🇿", hint: "Jsem z Prahy, jsem ___.", example: "Jsem z Prahy, jsem <b>Čech</b>.", grammar: "Noun", gender: "Masculine / Feminine", topic: "Nationalities", en: "Czech (person)", es: "Checo/a" },
+            { word: "Česko", emoji: "🗺️", hint: "Bydlím v ___.", example: "Bydlím v <b>Česku</b>.", grammar: "Noun", gender: "Neuter", topic: "Geography", en: "Czechia", es: "Chequia" },
+            { word: "Adresa", emoji: "📍", hint: "Jaká je tvoje ___?", example: "Jaká je tvoje <b>adresa</b>?", grammar: "Noun", gender: "Feminine", plural: "adresy", topic: "Basics", en: "Address", es: "Dirección" },
+            { word: "Banán", emoji: "🍌", hint: "Opice jí ___.", example: "Opice jí <b>banán</b>.", grammar: "Noun", gender: "Masculine Inanimate", plural: "banány", topic: "Food", en: "Banana", es: "Plátano" },
+            { word: "Broskev", emoji: "🍑", hint: "Letní sladká ___.", example: "Letní sladká <b>broskev</b>.", grammar: "Noun", gender: "Feminine", plural: "broskve", topic: "Food", en: "Peach", es: "Melocotón" },
+            { word: "Voda", emoji: "💧", hint: "Perlivá nebo neperlivá ___?", grammar: "Noun", gender: "Feminine", plural: "vody", topic: "Food", en: "Water", es: "Agua" },
+            { word: "Čaj", emoji: "🍵", hint: "Piju černý ___.", example: "Piju černý <b>čaj</b>.", grammar: "Noun", gender: "Masculine Inanimate", plural: "čaje", topic: "Food", en: "Tea", es: "Té" },
+            { word: "Čokoláda", emoji: "🍫", hint: "Dám si horkou ___.", example: "Dám si horkou <b>čokoládu</b>.", grammar: "Noun", gender: "Feminine", plural: "čokolády", topic: "Food", en: "Chocolate", es: "Chocolate" },
+            { word: "Jméno", emoji: "📛", hint: "Jaké je tvé ___?", example: "Jaké je tvé <b>jméno</b>?", grammar: "Noun", gender: "Neuter", plural: "jména", topic: "Basics", en: "First Name", es: "Nombre" },
+            { word: "Příjmení", emoji: "📝", hint: "Moje ___ je Novák.", example: "Moje <b>příjmení</b> je Novák.", grammar: "Noun", gender: "Neuter", plural: "příjmení", topic: "Basics", en: "Surname", es: "Apellido" },
+            { word: "Kočka", emoji: "🐈", hint: "Naše ___ spí.", example: "Naše <b>kočka</b> spí.", grammar: "Noun", gender: "Feminine", plural: "kočky", topic: "Animals", en: "Cat", es: "Gato" },
+            { word: "Kuře", emoji: "🍗", hint: "Dnes máme k obědu ___.", example: "Dnes máme k obědu <b>kuře</b>.", grammar: "Noun", gender: "Neuter", plural: "kuřata", topic: "Food", en: "Chicken", es: "Pollo" },
+            { word: "Pivo", emoji: "🍺", hint: "Jedno ___, prosím.", example: "Jedno <b>pivo</b>, prosím.", grammar: "Noun", gender: "Neuter", plural: "piva", topic: "Food", en: "Beer", es: "Cerveza", note: "Considered the national drink of the Czech Republic!" },
+            { word: "Rýže", emoji: "🍚", hint: "Kuře a ___.", example: "Kuře a <b>rýže</b>.", grammar: "Noun", gender: "Feminine", plural: "rýže", topic: "Food", en: "Rice", es: "Arroz" },
+            { word: "Zelí", emoji: "🥬", hint: "Vepřo knedlo ___.", example: "Vepřo knedlo <b>zelí</b>.", grammar: "Noun", gender: "Neuter", topic: "Food", en: "Cabbage", es: "Col/Repollo", note: "Part of the traditional Czech dish (Pork, dumplings, and cabbage)." },
+            { word: "Škola", emoji: "🏫", hint: "Jdu do ___.", example: "Jdu do <b>školy</b>.", grammar: "Noun", gender: "Feminine", plural: "školy", topic: "Places", en: "School", es: "Escuela" },
+            { word: "Univerzita", emoji: "🎓", hint: "Studuju na ___.", example: "Studuju na <b>univerzitě</b>.", grammar: "Noun", gender: "Feminine", plural: "univerzity", topic: "Places", en: "University", es: "Universidad" },
+            { word: "Problém", emoji: "⚠️", hint: "To není ___.", example: "To není <b>problém</b>.", grammar: "Noun", gender: "Masculine Inanimate", plural: "problémy", topic: "Abstract", en: "Problem", es: "Problema" },
+            { word: "Pravda", emoji: "⚖️", hint: "To je ___.", example: "To je <b>pravda</b>.", grammar: "Noun", gender: "Feminine", topic: "Abstract", en: "Truth", es: "Verdad", note: "'Máš pravdu' means 'You are right'." },
+            { word: "Papír", emoji: "📄", hint: "Potřebuju tužku a ___.", example: "Potřebuju tužku a <b>papír</b>.", grammar: "Noun", gender: "Masculine Inanimate", plural: "papíry", topic: "Objects", en: "Paper", es: "Papel" },
+            { word: "Telefon", emoji: "☎️", hint: "Zvoní ___.", example: "Zvoní <b>telefon</b>.", grammar: "Noun", gender: "Masculine Inanimate", plural: "telefony", topic: "Objects", en: "Telephone", es: "Teléfono" },
+            
+            // QUESTION WORDS
+            { word: "Kdo", emoji: "❓", hint: "___ je to?", example: "<b>Kdo</b> je to?", grammar: "Pronoun", topic: "Questions", en: "Who", es: "Quién" },
+            { word: "Co", emoji: "🤷", hint: "___ děláš?", example: "<b>Co</b> děláš?", grammar: "Pronoun", topic: "Questions", en: "What", es: "Qué" },
+            { word: "Kde", emoji: "🗺️", hint: "___ jsi?", example: "<b>Kde</b> jsi?", grammar: "Adverb", topic: "Questions", en: "Where (location)", es: "Dónde" },
+            { word: "Odkud", emoji: "🌍", hint: "___ jsi?", example: "<b>Odkud</b> jsi?", grammar: "Adverb", topic: "Questions", en: "Where from", es: "De dónde" },
+            { word: "Já", emoji: "🙋", hint: "___ jsem z Prahy.", example: "<b>Já</b> jsem z Prahy.", grammar: "Pronoun", topic: "Basics", en: "I", es: "Yo" },
+            { word: "Ty", emoji: "👉", hint: "A co ___?", example: "A co <b>ty</b>?", grammar: "Pronoun", topic: "Basics", en: "You (informal)", es: "Tú" },
+            { word: "On / Ona / Ono", emoji: "🧍", hint: "Kde je ___?", example: "Kde je <b>ona</b>?", grammar: "Pronoun", topic: "Basics", en: "He / She / It", es: "Él / Ella / Ello" },
+            { word: "My", emoji: "👨‍👩‍👧‍👦", hint: "___ jsme studenti.", example: "<b>My</b> jsme studenti.", grammar: "Pronoun", topic: "Basics", en: "We", es: "Nosotros" },
+            { word: "Vy", emoji: "🙌", hint: "Jste ___ učitel?", example: "Jste <b>vy</b> učitel?", grammar: "Pronoun", topic: "Basics", en: "You (plural/formal)", es: "Vosotros / Usted" },
+            { word: "Oni / Ony / Ona", emoji: "👥", hint: "Kdo jsou ___?", example: "Kdo jsou <b>oni</b>?", grammar: "Pronoun", topic: "Basics", en: "They", es: "Ellos / Ellas" },
+            { word: "Ten / Ta / To", emoji: "👆", hint: "Kdo je ___ muž?", example: "Kdo je <b>ten</b> muž?", grammar: "Pronoun", topic: "Basics", en: "That / The", es: "Ese / Esa" },
+
+            // ADVERBS, CONJUNCTIONS & PHRASES
+            { word: "Ano / Jo", emoji: "✅", hint: "___, prosím.", example: "<b>Ano</b>, prosím.", grammar: "Phrase", topic: "Basics", en: "Yes / Yeah", es: "Sí", note: "'Jo' is the informal spoken version of Yes." },
+            { word: "Ne", emoji: "❌", hint: "___, děkuji.", example: "<b>Ne</b>, děkuji.", grammar: "Phrase", topic: "Basics", en: "No", es: "No" },
+            { word: "Ale", emoji: "⚖️", hint: "Je to drahé, ___ hezké.", example: "Je to drahé, <b>ale</b> hezké.", grammar: "Conjunction", topic: "Basics", en: "But", es: "Pero" },
+            { word: "A", emoji: "➕", hint: "Ty ___ já.", example: "Ty <b>a</b> já.", grammar: "Conjunction", topic: "Basics", en: "And", es: "Y" },
+            { word: "Nebo", emoji: "🔀", hint: "Káva ___ čaj?", example: "Káva <b>nebo</b> čaj?", grammar: "Conjunction", topic: "Basics", en: "Or", es: "O" },
+            { word: "Protože", emoji: "💡", hint: "Spím, ___ jsem unavený.", example: "Spím, <b>protože</b> jsem unavený.", grammar: "Conjunction", topic: "Basics", en: "Because", es: "Porque" },
+            { word: "Česky", emoji: "🇨🇿", hint: "Mluvím ___.", example: "Mluvím <b>česky</b>.", grammar: "Adverb", topic: "Languages", en: "Czech (language)", es: "Checo" },
+            { word: "Anglicky", emoji: "🇬🇧", hint: "Mluvíte ___?", example: "Mluvíte <b>anglicky</b>?", grammar: "Adverb", topic: "Languages", en: "English (language)", es: "Inglés" },
+            { word: "Dobře", emoji: "👌", hint: "Mám se ___.", example: "Mám se <b>dobře</b>.", grammar: "Adverb", topic: "Basics", en: "Well / Good", es: "Bien" },
+            { word: "Špatně", emoji: "👎", hint: "Je mi ___.", example: "Je mi <b>špatně</b>.", grammar: "Adverb", topic: "Basics", en: "Badly / Sick", es: "Mal" },
+            { word: "Fajn", emoji: "😎", hint: "To je ___.", example: "To je <b>fajn</b>.", grammar: "Adjective", topic: "Slang", en: "Fine / Cool", es: "Guay / Bien", note: "Commonly used informal word borrowed from English." },
+            { word: "Super", emoji: "⭐", hint: "To auto je ___.", example: "To auto je <b>super</b>.", grammar: "Adjective", topic: "Slang", en: "Great / Super", es: "Súper", note: "Does not decline (change endings) based on gender." },
+            { word: "Tady", emoji: "📍", hint: "Jsem ___.", example: "Jsem <b>tady</b>.", grammar: "Adverb", topic: "Locations", en: "Here", es: "Aquí" },
+            { word: "Tam", emoji: "🎯", hint: "Banka je ___.", example: "Banka je <b>tam</b>.", grammar: "Adverb", topic: "Locations", en: "There", es: "Allí" },
+            { word: "Doma", emoji: "🏠", hint: "Víkend jsem ___.", example: "Víkend jsem <b>doma</b>.", grammar: "Adverb", topic: "Locations", en: "At home", es: "En casa" },
+            { word: "Venku", emoji: "🌳", hint: "Děti si hrají ___.", example: "Děti si hrají <b>venku</b>.", grammar: "Adverb", topic: "Locations", en: "Outside", es: "Fuera" },
+            { word: "Nahoře", emoji: "⬆️", hint: "Kniha je ___ na poličce.", example: "Kniha je <b>nahoře</b> na poličce.", grammar: "Adverb", topic: "Locations", en: "Up / Upstairs", es: "Arriba" },
+            { word: "Dole", emoji: "⬇️", hint: "Sklep je ___.", example: "Sklep je <b>dole</b>.", grammar: "Adverb", topic: "Locations", en: "Down / Downstairs", es: "Abajo" },
+            { word: "Vlevo", emoji: "⬅️", hint: "Zahněte ___.", example: "Zahněte <b>vlevo</b>.", grammar: "Adverb", topic: "Directions", en: "On the left", es: "A la izquierda" },
+            { word: "Vpravo", emoji: "➡️", hint: "Škola je ___.", example: "Škola je <b>vpravo</b>.", grammar: "Adverb", topic: "Directions", en: "On the right", es: "A la derecha" },
+            { word: "Dnes", emoji: "📅", hint: "___ je pondělí.", example: "<b>Dnes</b> je pondělí.", grammar: "Adverb", topic: "Time", en: "Today", es: "Hoy" },
+            { word: "Ráno", emoji: "🌅", hint: "Dobré ___.", example: "Dobré <b>ráno</b>.", grammar: "Noun/Adverb", topic: "Time", en: "Morning", es: "Mañana" },
+            { word: "Večer", emoji: "🌆", hint: "Dobrý ___.", example: "Dobrý <b>večer</b>.", grammar: "Noun", topic: "Time", en: "Evening", es: "Tarde/Noche" },
+            { word: "Noc", emoji: "🌙", hint: "Dobrou ___.", example: "Dobrou <b>noc</b>.", grammar: "Noun", gender: "Feminine", topic: "Time", en: "Night", es: "Noche" },
+            { word: "Den", emoji: "☀️", hint: "Dobrý ___!", example: "Dobrý <b>den</b>!", grammar: "Noun", gender: "Masculine", plural: "dny", topic: "Time", en: "Day", es: "Día" },
+            { word: "Ještě", emoji: "⏳", hint: "Mám ___ čas.", example: "Mám <b>ještě</b> čas.", grammar: "Adverb", topic: "Time", en: "Still / Yet", es: "Todavía / Aún", note: "Ještě ne means 'Not yet'." },
+            { word: "Už", emoji: "✅", hint: "___ musím jít.", example: "<b>Už</b> musím jít.", grammar: "Adverb", topic: "Time", en: "Already", es: "Ya", note: "Už ne means 'No longer'." },
+            { word: "Jen", emoji: "🤏", hint: "Mám ___ pět korun.", example: "Mám <b>jen</b> pět korun.", grammar: "Adverb", topic: "Quantity", en: "Only / Just", es: "Solo" },
+            { word: "Moc", emoji: "📈", hint: "To je ___ drahé.", example: "To je <b>moc</b> drahé.", grammar: "Adverb", topic: "Quantity", en: "Very / Too much", es: "Muy / Demasiado" },
+            { word: "Trochu", emoji: "📉", hint: "Mluvím ___ česky.", example: "Mluvím <b>trochu</b> česky.", grammar: "Adverb", topic: "Quantity", en: "A little", es: "Un poco" },
+            { word: "Spolu", emoji: "🤝", hint: "Bydlíme ___.", example: "Bydlíme <b>spolu</b>.", grammar: "Adverb", topic: "Relationships", en: "Together", es: "Juntos" },
+
+            // --- NEWLY ADDED WORDS ---
+            { word: "Fotit", emoji: "📷", hint: "Rád ___ památky.", example: "Rád <b>fotím</b> památky.", grammar: "Verb", topic: "Hobbies", en: "To take photos", es: "Tomar fotos", conjugations: { ja: "fotím", ty: "fotíš", on: "fotí", my: "fotíme", vy: "fotíte", oni: "fotí" } },
+            { word: "Gramatika", emoji: "📐", hint: "Česká ___ je těžká.", example: "Česká <b>gramatika</b> je těžká.", grammar: "Noun", gender: "Feminine", topic: "Learning", en: "Grammar", es: "Gramática" },
+            { word: "Internet", emoji: "🌐", hint: "Hledám to na ___u.", example: "Hledám to na <b>internetu</b>.", grammar: "Noun", gender: "Masculine Inanimate", topic: "Technology", en: "Internet", es: "Internet" },
+            { word: "Jazyk", emoji: "👅", hint: "Studuju cizí ___.", example: "Studuju cizí <b>jazyk</b>.", grammar: "Noun", gender: "Masculine Inanimate", plural: "jazyky", topic: "Learning", en: "Language / Tongue", es: "Idioma / Lengua" },
+            { word: "Jeden / Jedna / Jedno", emoji: "1️⃣", hint: "Mám jen ___ bratra.", example: "Mám jen <b>jednoho</b> bratra.", grammar: "Number", topic: "Numbers", en: "One", es: "Uno/a", note: "Changes based on the gender of the noun it describes." },
+            { word: "Kafe / Káva", emoji: "☕", hint: "Ráno piju ___.", example: "Ráno piju <b>kafe</b>.", grammar: "Noun", gender: "Neuter / Feminine", topic: "Food", en: "Coffee", es: "Café", note: "'Kafe' is informal, 'Káva' is formal." },
+            { word: "Kamarád / Kamarádka", emoji: "👫", hint: "To je můj ___.", example: "To je můj <b>kamarád</b>.", grammar: "Noun", gender: "Masculine / Feminine", topic: "People", en: "Friend", es: "Amigo/a" },
+            { word: "Kreslit", emoji: "🎨", hint: "Děti rády ___.", example: "Děti rády <b>kreslí</b>.", grammar: "Verb", topic: "Hobbies", en: "To draw", es: "Dibujar", conjugations: { ja: "kreslím", ty: "kreslíš", on: "kreslí", my: "kreslíme", vy: "kreslíte", oni: "kreslí" } },
+            { word: "Lekce", emoji: "🎓", hint: "Naše první ___.", example: "Naše první <b>lekce</b>.", grammar: "Noun", gender: "Feminine", plural: "lekce", topic: "School", en: "Lesson", es: "Lección" },
+            { word: "Mobil", emoji: "📱", hint: "Kde mám ___?", example: "Kde mám <b>mobil</b>?", grammar: "Noun", gender: "Masculine Inanimate", plural: "mobily", topic: "Technology", en: "Mobile phone", es: "Móvil" },
+            { word: "Moment", emoji: "⏱️", hint: "___, prosím.", example: "<b>Moment</b>, prosím.", grammar: "Noun", topic: "Time", en: "Moment", es: "Momento" },
+            { word: "Muž", emoji: "👨", hint: "Ten ___ je vysoký.", example: "Ten <b>muž</b> je vysoký.", grammar: "Noun", gender: "Masculine Animate", plural: "muži", topic: "People", en: "Man", es: "Hombre" },
+            { word: "Nic", emoji: "🕳️", hint: "Nechci ___.", example: "Nechci <b>nic</b>.", grammar: "Pronoun", topic: "Abstract", en: "Nothing", es: "Nada", note: "In Czech, double negatives are grammatically correct and required (e.g., 'I do not want nothing')." },
+            { word: "Odpovídat", emoji: "💬", hint: "Musím ___ na email.", example: "Musím <b>odpovídat</b> na email.", grammar: "Verb", topic: "Communication", en: "To answer / reply", es: "Responder", conjugations: { ja: "odpovídám", ty: "odpovídáš", on: "odpovídá", my: "odpovídáme", vy: "odpovídáte", oni: "odpovídají" } },
+            { word: "Pan / Pán", emoji: "🎩", hint: "To je ___ Novák.", example: "To je <b>pan</b> Novák.", grammar: "Noun", gender: "Masculine Animate", topic: "Titles", en: "Mr. / Gentleman", es: "Señor", note: "'Pan' is used with a name. 'Pán' is used alone (a gentleman)." },
+            { word: "Paní", emoji: "👒", hint: "To je ___ Nováková.", example: "To je <b>paní</b> Nováková.", grammar: "Noun", gender: "Feminine", topic: "Titles", en: "Mrs. / Lady", es: "Señora" },
+            { word: "Počítač", emoji: "💻", hint: "Pracuju na ___i.", example: "Pracuju na <b>počítači</b>.", grammar: "Noun", gender: "Masculine Inanimate", plural: "počítače", topic: "Technology", en: "Computer", es: "Ordenador" },
+            { word: "Poslouchat", emoji: "🎧", hint: "Rád ___ hudbu.", example: "Rád <b>poslouchám</b> hudbu.", grammar: "Verb", topic: "Hobbies", en: "To listen", es: "Escuchar", conjugations: { ja: "poslouchám", ty: "posloucháš", on: "poslouchá", my: "posloucháme", vy: "posloucháte", oni: "poslouchají" } },
+            { word: "Říkat", emoji: "🗣️", hint: "Co to ___?", example: "Co to <b>říkáš</b>?", grammar: "Verb", topic: "Communication", en: "To say / tell", es: "Decir", conjugations: { ja: "říkám", ty: "říkáš", on: "říká", my: "říkáme", vy: "říkáte", oni: "říkají" } },
+            { word: "Spolužák / Spolužačka", emoji: "🎒", hint: "To je můj ___ ze školy.", example: "To je můj <b>spolužák</b> ze školy.", grammar: "Noun", gender: "Masculine / Feminine", topic: "People", en: "Classmate", es: "Compañero/a de clase" },
+            { word: "Student / Studentka", emoji: "🤓", hint: "Jsem ___ na univerzitě.", example: "Jsem <b>student</b> na univerzitě.", grammar: "Noun", gender: "Masculine / Feminine", topic: "People", en: "Student", es: "Estudiante" },
+            { word: "Učebnice", emoji: "📗", hint: "Otevřete si ___.", example: "Otevřete si <b>učebnice</b>.", grammar: "Noun", gender: "Feminine", plural: "učebnice", topic: "School", en: "Textbook", es: "Libro de texto" },
+            { word: "Učitel / Učitelka", emoji: "👨‍🏫", hint: "Můj ___ je velmi přísný.", example: "Můj <b>učitel</b> je velmi přísný.", grammar: "Noun", gender: "Masculine / Feminine", topic: "People", en: "Teacher", es: "Profesor/a" },
+            { word: "Umět", emoji: "💪", hint: "Já ___ česky.", example: "Já <b>umím</b> česky.", grammar: "Verb", topic: "Skills", en: "To know how to / Can", es: "Saber (hacer algo) / Poder", conjugations: { ja: "umím", ty: "umíš", on: "umí", my: "umíme", vy: "umíte", oni: "umějí" } },
+            { word: "Věc", emoji: "📦", hint: "To je moje ___.", example: "To je moje <b>věc</b>.", grammar: "Noun", gender: "Feminine", plural: "věci", topic: "Objects", en: "Thing", es: "Cosa" },
+            { word: "Zpívat", emoji: "🎤", hint: "Ona krásně ___.", example: "Ona krásně <b>zpívá</b>.", grammar: "Verb", topic: "Hobbies", en: "To sing", es: "Cantar", conjugations: { ja: "zpívám", ty: "zpíváš", on: "zpívá", my: "zpíváme", vy: "zpíváte", oni: "zpívají" } },
+            { word: "Žena", emoji: "👩", hint: "Ta ___ je krásná.", example: "Ta <b>žena</b> je krásná.", grammar: "Noun", gender: "Feminine", plural: "ženy", topic: "People", en: "Woman / Wife", es: "Mujer / Esposa" },
+            { word: "Dva / Dvě", emoji: "2️⃣", hint: "Mám ___ auta.", example: "Mám <b>dvě</b> auta.", grammar: "Number", topic: "Numbers", en: "Two", es: "Dos", note: "Dva (Masculine) / Dvě (Feminine & Neuter)." },
+            { word: "Tři", emoji: "3️⃣", hint: "Vidím ___ lidi.", example: "Vidím <b>tři</b> lidi.", grammar: "Number", topic: "Numbers", en: "Three", es: "Tres" },
+            { word: "Čtyři", emoji: "4️⃣", hint: "Stůl má ___ nohy.", example: "Stůl má <b>čtyři</b> nohy.", grammar: "Number", topic: "Numbers", en: "Four", es: "Cuatro" },
+            { word: "Pět", emoji: "5️⃣", hint: "Mám ___ korun.", example: "Mám <b>pět</b> korun.", grammar: "Number", topic: "Numbers", en: "Five", es: "Cinco", note: "Numbers 5 and up require the genitive plural for nouns." },
+            { word: "Rodina", emoji: "👨‍👩‍👧", hint: "Moje ___ je velká.", example: "Moje <b>rodina</b> je velká.", grammar: "Noun", gender: "Feminine", plural: "rodiny", topic: "Family", en: "Family", es: "Familia" },
+            { word: "Matka / Máma", emoji: "🤱", hint: "Moje ___ dobře vaří.", example: "Moje <b>máma</b> dobře vaří.", grammar: "Noun", gender: "Feminine", topic: "Family", en: "Mother / Mom", es: "Madre / Mamá" },
+            { word: "Otec / Táta", emoji: "👨‍🍼", hint: "Můj ___ pracuje v bance.", example: "Můj <b>táta</b> pracuje v bance.", grammar: "Noun", gender: "Masculine Animate", topic: "Family", en: "Father / Dad", es: "Padre / Papá" },
+            { word: "Bratr", emoji: "👦", hint: "Mám mladšího ___a.", example: "Mám mladšího <b>bratra</b>.", grammar: "Noun", gender: "Masculine Animate", plural: "bratři", topic: "Family", en: "Brother", es: "Hermano" },
+            { word: "Sestra", emoji: "👧", hint: "Moje ___ studuje.", example: "Moje <b>sestra</b> studuje.", grammar: "Noun", gender: "Feminine", plural: "sestry", topic: "Family", en: "Sister", es: "Hermana" },
+            { word: "Bílý", emoji: "⚪", hint: "Mám ___ sníh.", example: "Mám <b>bílý</b> sníh.", grammar: "Adjective", topic: "Colors", en: "White", es: "Blanco" },
+            { word: "Černý", emoji: "⚫", hint: "Piju ___ čaj.", example: "Piju <b>černý</b> čaj.", grammar: "Adjective", topic: "Colors", en: "Black", es: "Negro" },
+            { word: "Červený", emoji: "🔴", hint: "Koupil ___ auto.", example: "Koupil <b>červené</b> auto.", grammar: "Adjective", topic: "Colors", en: "Red", es: "Rojo" },
+            { word: "Modrý", emoji: "🔵", hint: "Nebe je ___.", example: "Nebe je <b>modré</b>.", grammar: "Adjective", topic: "Colors", en: "Blue", es: "Azul" },
+            { word: "Zelený", emoji: "🟢", hint: "Tráva je ___.", example: "Tráva je <b>zelená</b>.", grammar: "Adjective", topic: "Colors", en: "Green", es: "Verde" },
+            { word: "Žlutý", emoji: "🟡", hint: "Slunce je ___.", example: "Slunce je <b>žluté</b>.", grammar: "Adjective", topic: "Colors", en: "Yellow", es: "Amarillo" }
+        ];
+
+        const STORAGE_KEY = 'czechA1AppProgressV3';
+        
+        let appState = {
+            xp: 0,
+            level: 1,
+            cardsReviewed: 0,
+            correctAnswers: 0,
+            queue: [], // Array of indices
+            currentQueuePos: 0,
+            wordStats: {} // Tracks individual word mastery { "Být": { seen: 0, correct: 0 } }
+        };
+
+        const xpPerLevel = 50;
+
+        function initApp() {
+            loadState();
+            
+            // Ensure all words exist in wordStats
+            vocabData.forEach(item => {
+                if (!appState.wordStats[item.word]) {
+                    appState.wordStats[item.word] = { seen: 0, correct: 0 };
+                }
+            });
+
+            if (appState.queue.length === 0 || appState.currentQueuePos >= appState.queue.length) {
+                generateQueue();
+            }
+            
+            updateStatsUI();
+            loadCardToDOM(appState.queue[appState.currentQueuePos]);
+            // Ensure dictionary is populated immediately
+            renderDictionary(); 
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    // Merge saved state with defaults to handle version updates
+                    appState = { ...appState, ...parsed };
+                    if (!appState.wordStats) appState.wordStats = {};
+                    if (!appState.queue || appState.queue.length === 0) generateQueue();
+                } catch (e) {
+                    console.error("Failed to parse save data");
+                }
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+        }
+
+        function generateQueue() {
+            // Focus queue slightly on words with lower mastery in the future, 
+            // for now purely random shuffle of the entire deck.
+            let indices = Array.from({length: vocabData.length}, (_, i) => i);
+            // Fisher-Yates Shuffle for anti-repetition
+            for (let i = indices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indices[i], indices[j]] = [indices[j], indices[i]];
+            }
+            appState.queue = indices;
+            appState.currentQueuePos = 0;
+            saveState();
+        }
+
+        function buildCardBackHTML(data, isModal = false) {
+            let html = `
+                <div class="emoji-back" id="b-emoji">${data.emoji || '🇨🇿'}</div>
+                <h1 class="word-header b-word-header" id="b-word">${data.word}</h1>
+                
+                <div class="tags">
+                    ${data.grammar ? `<span class="tag t-grammar">${data.grammar}</span>` : ''}
+                    ${data.gender ? `<span class="tag t-gender">${data.gender}</span>` : ''}
+                    ${data.topic ? `<span class="tag t-topic">${data.topic}</span>` : ''}
+                    ${data.plural ? `<span class="tag t-plural">Plural: ${data.plural}</span>` : ''}
+                </div>`;
+
+            if (data.example) {
+                html += `<div class="hint brutal example-back" id="b-example">${data.example}</div>`;
+            }
+
+            html += `
+                <div class="translations">
+                    <p>🇬🇧 <strong>EN:</strong> <span id="b-en">${data.en || 'N/A'}</span></p>
+                    <p>🇪🇸 <strong>ES:</strong> <span id="b-es">${data.es || 'N/A'}</span></p>
+                </div>`;
+
+            if (data.grammar === 'Verb' && data.conjugations) {
+                html += `
+                <div class="conjugation-box" id="b-conjugations">
+                    <h3>Conjugation (Present)</h3>
+                    <div class="conjugation-grid">
+                        <div class="conj-item"><span class="conj-pronoun">já</span> <span>${data.conjugations.ja}</span></div>
+                        <div class="conj-item"><span class="conj-pronoun">my</span> <span>${data.conjugations.my}</span></div>
+                        <div class="conj-item"><span class="conj-pronoun">ty</span> <span>${data.conjugations.ty}</span></div>
+                        <div class="conj-item"><span class="conj-pronoun">vy</span> <span>${data.conjugations.vy}</span></div>
+                        <div class="conj-item"><span class="conj-pronoun">on/a/to</span> <span>${data.conjugations.on}</span></div>
+                        <div class="conj-item"><span class="conj-pronoun">oni/y/a</span> <span>${data.conjugations.oni}</span></div>
+                    </div>
+                </div>`;
+            }
+
+            if (data.note) {
+                html += `<div class="fun-fact" id="b-note">💡 <strong>Note:</strong> ${data.note}</div>`;
+            }
+
+            if (isModal) {
+                html += `<button class="brutal-btn close-modal-btn" onclick="closeModal(event)">Close ❌</button>`;
+            } else {
+                html += `
+                <div class="action-buttons">
+                    <button class="brutal-btn btn-train" onclick="handleAnswer(false)">Znovu 🧠</button>
+                    <button class="brutal-btn btn-correct" onclick="handleAnswer(true)">Umím! ✅</button>
+                </div>`;
+            }
+
+            return html;
+        }
+
+        const card = document.getElementById('flashcard');
+
+        function loadCardToDOM(vocabIndex) {
+            // Guard clause if index is somehow invalid
+            if (vocabIndex === undefined || !vocabData[vocabIndex]) {
+                generateQueue();
+                vocabIndex = appState.queue[appState.currentQueuePos];
+            }
+
+            const data = vocabData[vocabIndex];
+            
+            // Front
+            document.getElementById('f-word').innerText = data.word;
+            const hintEl = document.getElementById('f-hint');
+            if (data.hint) {
+                hintEl.innerHTML = data.hint;
+                hintEl.style.display = 'block';
+            } else {
+                hintEl.style.display = 'none';
+            }
+            
+            // Back
+            const backContainer = document.getElementById('card-back-content');
+            backContainer.innerHTML = buildCardBackHTML(data, false);
+
+            // Reset visual flip
+            card.style.transition = 'none';
+            card.classList.remove('is-flipped');
+            setTimeout(() => { card.style.transition = 'transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1)'; }, 50);
+        }
+
+        function flipCard() {
+            card.classList.add('is-flipped');
+        }
+        // Simulating Audio (Using Web Speech API)
+        function playAudio(event, elementId = null, specificWord = null) {
+            event.stopPropagation(); 
+            
+            let wordToSay = specificWord;
+            if (!wordToSay) {
+                if (elementId) {
+                    wordToSay = document.getElementById(elementId).innerText;
+                } else {
+                    const index = appState.queue[appState.currentQueuePos];
+                    wordToSay = vocabData[index].word;
+                }
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(wordToSay);
+            utterance.lang = 'cs-CZ'; 
+            utterance.rate = 0.85; // Slightly slower for learning
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Handle the user's answer
+        function handleAnswer(wasCorrect) {
+            const currentWord = vocabData[appState.queue[appState.currentQueuePos]].word;
+            
+            // Update word mastery stats
+            if (!appState.wordStats[currentWord]) {
+                appState.wordStats[currentWord] = { seen: 0, correct: 0 };
+            }
+            appState.wordStats[currentWord].seen++;
+            if (wasCorrect) {
+                appState.wordStats[currentWord].correct++;
+                appState.correctAnswers++;
+                appState.xp += 10;
+                
+                // Level Up Check
+                const newLevel = Math.floor(appState.xp / xpPerLevel) + 1;
+                if (newLevel > appState.level) {
+                    appState.level = newLevel;
+                    // Removed alert for uninterrupted flow!
+                }
+            }
+            // Move queue forward
+            appState.cardsReviewed++;
+            appState.currentQueuePos++;
+            
+            // Check if queue is finished
+            if (appState.currentQueuePos >= appState.queue.length) {
+                // Silently loop and reshuffle when deck finishes to avoid popup interruptions
+                generateQueue();
+            }
+
+            saveState();
+            updateStatsUI();
+            if (document.getElementById('view-dictionary').classList.contains('active')) {
+                renderDictionary(); // Update mastery badges in background
+            }
+            loadCardToDOM(appState.queue[appState.currentQueuePos]);
+        }
+
+        function updateStatsUI() {
+            document.getElementById('top-level').innerText = appState.level;
+            document.getElementById('stat-xp').innerText = appState.xp;
+            document.getElementById('stat-level').innerText = appState.level;
+            document.getElementById('stat-reviewed').innerText = appState.cardsReviewed;
+            
+            let accuracy = 0;
+            if (appState.cardsReviewed > 0) {
+                accuracy = Math.round((appState.correctAnswers / appState.cardsReviewed) * 100);
+            }
+            document.getElementById('stat-accuracy').innerText = `${accuracy}%`;
+
+            // Progress bar to next level
+            const xpInCurrentLevel = appState.xp % xpPerLevel;
+            const progressPercent = (xpInCurrentLevel / xpPerLevel) * 100;
+            document.getElementById('stat-progress').style.width = `${progressPercent}%`;
+        }
+
+        function renderDictionary() {
+            const container = document.getElementById('dict-list-container');
+            const searchTerm = document.getElementById('dict-search').value.toLowerCase();
+            const filterGrammar = document.getElementById('dict-grammar').value;
+            const sortMode = document.getElementById('dict-sort').value;
+            // 1. Filter
+            let filtered = vocabData.map((item, index) => ({...item, originalIndex: index})).filter(item => {
+                const matchesSearch = item.word.toLowerCase().includes(searchTerm) || 
+                                      (item.en && item.en.toLowerCase().includes(searchTerm));
+                const matchesGrammar = filterGrammar === 'All' || item.grammar === filterGrammar;
+                return matchesSearch && matchesGrammar;
+            });
+            // 2. Sort
+            filtered.sort((a, b) => {
+                if (sortMode === 'alpha') return a.word.localeCompare(b.word);
+                
+                // Calculate mastery for sorting
+                const getMastery = (word) => {
+                    const stats = appState.wordStats[word];
+                    if (!stats || stats.seen === 0) return sortMode === 'weakest' ? -1 : 101; 
+                    return (stats.correct / stats.seen) * 100;
+                };
+
+                const masteryA = getMastery(a.word);
+                const masteryB = getMastery(b.word);
+
+                if (sortMode === 'weakest') return masteryA - masteryB;
+                if (sortMode === 'strongest') return masteryB - masteryA;
+                return 0;
+            });
+
+            // 3. Render HTML
+            container.innerHTML = '';
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding: 20px;">No words found matching criteria.</div>';
+                return;
+            }
+
+            filtered.forEach(item => {
+                const stats = appState.wordStats[item.word];
+                let masteryHTML = `<span class="mastery-badge mastery-none">Not seen</span>`;
+                
+                if (stats && stats.seen > 0) {
+                    const pct = Math.round((stats.correct / stats.seen) * 100);
+                    let badgeClass = 'mastery-bad';
+                    if (pct >= 80) badgeClass = 'mastery-good';
+                    else if (pct >= 50) badgeClass = 'mastery-ok';
+                    
+                    masteryHTML = `<span class="mastery-badge ${badgeClass}">${pct}% Mastery</span>`;
+                }
+
+                const el = document.createElement('div');
+                el.className = 'dict-item';
+                el.onclick = () => openModal(item.originalIndex);
+                
+                el.innerHTML = `
+                    <div>
+                        <div class="dict-word-title">${item.word} ${item.emoji || ''}</div>
+                        <div class="dict-translations">🇬🇧 ${item.en} | 🇪🇸 ${item.es}</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:flex-end; gap:5px;">
+                        ${masteryHTML}
+                        <span style="font-size:0.8rem; color:#888;">Tap to open</span>
+                    </div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function openModal(index) {
+            const data = vocabData[index];
+            const modal = document.getElementById('word-modal');
+            const contentArea = document.getElementById('modal-content-area');
+            
+            // Build the modal contents using the exact same HTML generator as the flashcard back
+            contentArea.innerHTML = buildCardBackHTML(data, true);
+            
+            // Show modal
+            modal.style.display = 'flex';
+        }
+
+        function closeModal(event) {
+            if (event) event.stopPropagation();
+            document.getElementById('word-modal').style.display = 'none';
+        }
+
+        function exportProgress() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "czech-it-up-progress-backup.json");
+            document.body.appendChild(downloadAnchorNode); 
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+        function importProgress(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedState = JSON.parse(e.target.result);
+                    if (importedState && typeof importedState.xp !== 'undefined' && importedState.wordStats) {
+                        appState = importedState;
+                        saveState();
+                        initApp();
+                        alert("Progress imported successfully! 🎉");
+                        switchTab('stats');
+                    } else {
+                        alert("Invalid backup file. Missing required data.");
+                    }
+                } catch(err) {
+                    alert("Error parsing file. Please make sure it is a valid JSON backup.");
+                }
+                // Reset file input
+                document.getElementById('import-file').value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        function switchTab(tabName) {
+            // Update buttons
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            // Update views
+            document.getElementById(`tab-btn-${tabName}`).classList.add('active');
+            document.getElementById(`view-${tabName}`).classList.add('active');
+            
+            if(tabName === 'dictionary') {
+                renderDictionary();
+            }
+        }
+
+        function resetProgress() {
+            if(confirm("Are you sure you want to reset all your XP and mastery data? This cannot be undone.")) {
+                localStorage.removeItem(STORAGE_KEY);
+                appState = {
+                    xp: 0, level: 1, cardsReviewed: 0, correctAnswers: 0, queue: [], currentQueuePos: 0, wordStats: {}
+                };
+                initApp();
+                switchTab('practice');
+            }
+        }
+
+        // Boot the app
+        window.onload = initApp;
+
+    </script>
+</body>
+</html>
